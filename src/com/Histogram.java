@@ -55,9 +55,7 @@ public class Histogram {
             min = 1+(i*nums.length/bins.length);
             max = (i+1)*(nums.length/bins.length);
             
-            String bns = (min<10)?String.format("% d",min):""+min;
-            bns += " - ";
-            bns += (max<100)?String.format("% d",max):""+max;
+            String bns = String.format("%2d - %3d",min, max);
             hist += bns+":  ";
             for(int j=0;j<bins[i];j++){
                 hist += "*";
