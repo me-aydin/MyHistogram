@@ -9,7 +9,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+import model.DBHand;
 
 /**
  *
@@ -27,10 +32,9 @@ public class HistDemo {
         nums = new int[100];
         Random random = new Random();
         
-        for(int i=0;i<100;i++) {
+        for(int i=0;i<100;i++) 
             nums[i] = random.nextInt(100);
-           // System.out.println(nums[i]);
-        }
+        
     }
     
     public int[] retrieve() throws FileNotFoundException, IOException {
@@ -57,6 +61,50 @@ public class HistDemo {
 
         return nums;
     }
+    
+    public int insert(){
+        DBHand jdbc = new DBHand();
+        int count = 0;
+        
+         boolean connectionSet = jdbc.setConnection("meaydin","aydinme");
+         
+         if (connectionSet) {
+            for(int i=0;i<100;i++){ 
+                count += jdbc.insert("insert into grades (GradeID,grade) values ('1',"+nums[i]+")");
+            }
+            
+         }
+        else 
+             System.out.println("ERROR establishing connection! Please consult stack trace.");   
+
+        
+        return count;
+    }
+    
+    public int[] retrieve(String query){
+        //int[] nums;
+        
+        List list = new ArrayList();
+        
+        DBHand jdbc = new DBHand();
+        
+         boolean connectionSet = jdbc.setConnection("meaydin","aydinme");
+         if (connectionSet) {
+            list = jdbc.getNumbers(query);
+         }
+        else 
+             System.out.println("ERROR establishing connection! Please consult stack trace.");   
+        
+         nums = new int[list.size()];
+         Iterator itr = list.iterator();
+         int i = 0;
+         while(itr.hasNext()) {
+             nums[i++] = (int)itr.next();
+         }
+         
+        return nums;
+    }
+    
     public int[] getNums(){
          return nums;
     }
@@ -66,12 +114,16 @@ public class HistDemo {
         HistDemo demo = new HistDemo(); 
         
        // int[] nums = demo.getNums();
-        int[] nums = demo.retrieve();
+       // int[] nums = demo.retrieve();
+      /*   */
+        int[] nums = demo.retrieve("select * from meaydin.grades"); 
         
         Histogram hist = new Histogram(nums, 10);
         
         System.out.println(hist.getHistogram());
-        
+     
+      
+      // System.out.println(demo.insert());
     }
     
 }
